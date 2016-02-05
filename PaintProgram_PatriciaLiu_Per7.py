@@ -1810,8 +1810,8 @@ while running:
         else:
             TextTool.hideDropDown(screen)
             
-        if Rect(295,265,20,31).collidepoint(mx,my) and mb[0]==1 and (not textClick or showDropDown):
-            showDropDown=not showDropDown
+        if (Rect(295,265,20,31).collidepoint(mx,my) and mb[0]==1 and not textClick) or (not Rect(295,265,20,31).collidepoint(mx,my) and mb[0]==1 and showDropDown):
+            showDropDown=not showDropDown #if click on drop down arrow itll hide or show the fonts
 
         if mb[0]==1 and not textClick:
             textClick=True
@@ -2458,10 +2458,10 @@ while running:
     ##################################################
 
     #USING THE TOOLS ON THE CANVAS
-    if mb[0]==0 or not canvasRect.collidepoint(mx,my):
+    if mb[0]==0:
         randNum=0 
             
-    if canvasRect.collidepoint(mx,my) and mb[0]==1  and subTool=="None":
+    if mb[0]==1  and subTool=="None":
         if randNum==0:
             randNum=randint(1,1000)
             
