@@ -34,7 +34,8 @@ def rectIntersect(rect1, rect2):
     bottom = min(rect1.bottom, rect2.bottom)
 
     rect=Rect(left, top, right-left, bottom-top)
-    return rect    
+    return rect
+
 ################SCREEN SETUP######################
 
 #INITIATE/SCREEN SIZE SETUP
@@ -537,9 +538,7 @@ draw.rect(screen,darkBlue,volControl,2)
 
 ##################################################
 
-running = True
-
-##################################################
+#__init__ FOR OBJECTS
 ToolSelection = ToolSelection.ToolBox(darkBlue,lightBlue)
 PencilTool = PencilTool.PencilTool(darkBlue,lightBlue,darkBlue,titleFont,darkBlue,ribbonFont2,RGBFont)
 EraserTool = EraserTool.EraserTool(darkBlue,lightBlue,darkBlue,titleFont,darkBlue,ribbonFont2,RGBFont)
@@ -549,6 +548,11 @@ PenTool = PenTool.PenTool(darkBlue,lightBlue,darkBlue,titleFont,darkBlue,ribbonF
 TextTool = TextTool.TextTool(white,darkBlue,darkBlue)
 ShapeTool = ShapeTool.ShapeTool(darkBlue,lightBlue,darkBlue,titleFont,darkBlue,ribbonFont2,RGBFont,"Line")
 CustomShape = CustomShape.CustomShape(screen)
+
+##################################################
+
+running = True
+
 ##################################################
 while running:
     for evnt in event.get():
