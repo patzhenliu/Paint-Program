@@ -1484,11 +1484,10 @@ while running:
         SprayTool.draw(screen)
         
         #SPRAYPAINT ICONS
-        screen.blit(spray1,(168,263))
-        screen.blit(spray2,(212,262))
-        screen.blit(spray3,(256,261))
-        screen.blit(spray4,(300,260))
-        screen.blit(spray5,(344,259))
+        sprayIconList=[spray1,spray2,spray3,spray4,spray5]
+        for i in range(5):    
+            screen.blit(sprayIconList[i],(168+44*i,263-i))
+    
         screen.blit(spray6,(162,308))
         screen.blit(spray7,(206,306))
         screen.blit(spray8,(250,305))
@@ -2535,11 +2534,9 @@ while running:
                     for i in range(0,dist):
                         dotx=int(i*(mx-pmx)/dist+pmx)
                         doty=int(i*(my-pmy)/dist+pmy)
-                       # draw.line(screen,col,(dotx+penThick,doty-penThick),(dotx-penThick,doty+penThick),3)
                         screen.blit(surf3,(dotx-surf3.get_width()//2,doty-surf3.get_height()//2))
                 else:
-                    #draw.line(screen,col,(mx+penThick,my-penThick),(mx-penThick,my+penThick),3)
-                    surf4.set_alpha(int(penrOpacity/220*255))
+                    surf4.set_alpha(int(penOpacity/220*255))
                     screen.blit(surf3,(mx-surf3.get_width()//2,my-surf3.get_height()//2))
 
         pRandNum=randNum #pRandNum and randNum become equal if user holds the mouse down for a longer period of time
@@ -2798,7 +2795,6 @@ while running:
             screen.blit(rect,(9,45))
             if mb[0]==1:
                 subTool="File New"
-                display.set_caption("Untitled")
                 saved=False
 
         if fileOpenRect.collidepoint(mx,my):
@@ -2840,7 +2836,6 @@ while running:
     if subTool!="View Mode":
         if (keys[K_LCTRL] or keys[K_RCTRL]) and keys[K_n]:#NEW
             subTool="File New"
-            display.set_caption("Untitled")
             saved=False
                 
         if (keys[K_LCTRL] or keys[K_RCTRL]) and keys[K_o]:#OPEN
@@ -2848,7 +2843,6 @@ while running:
             del redoList[0:]
             del undoList[-1]
             subTool="File Open"
-            display.set_caption(fName)
 
         if (keys[K_LCTRL] or keys[K_RCTRL]) and keys[K_s]:#SAVE
             if not saved:
@@ -3127,6 +3121,7 @@ while running:
                 del redoList[0:]
                 draw.rect(screen,white,canvasRect)
                 subTool="None"
+                display.set_caption("Untitled")
                 
         if noClearRect.collidepoint(mx,my):
             rect=Surface((80,30), SRCALPHA, 32)
@@ -3137,6 +3132,8 @@ while running:
                 del undoList[2:]
                 del redoList[0:]
                 subTool="None"
+                display.set_caption("Untitled")
+
         
     if subTool=="File Open":
         if fName!="": #Opening a file
