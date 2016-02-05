@@ -2466,7 +2466,7 @@ while running:
             randNum=randint(1,1000)
             
         screen.set_clip(canvasRect)
-        if tool=="Cursor" and not placeSelected and not pasteArea:
+        if tool=="Cursor" and not placeSelected and not pasteArea and canvasRect.collidepoint(mx,my):
 
             screen.blit(canvasBuff, (447,92))
             
