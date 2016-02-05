@@ -4,6 +4,7 @@ from pygame import *
 from random import *
 from math import *
 import sys
+from pygame.locals import *
 
 sys.path.insert(0, 'modules')
 
