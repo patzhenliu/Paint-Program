@@ -1,5 +1,7 @@
 ﻿#PaintProgram_PatriciaLiu_Per7.py
 #GALAXY PAINT
+#https://github.com/patzhenliu/Paint-Program.git
+
 from pygame import *
 from random import *
 from math import *
@@ -21,6 +23,10 @@ import ShapeTool
 import CustomShape
 import ShortcutMenu
 
+##################################################
+
+#FUNCTION
+#gets for rect only inside the canvas if user goes out of the canvas.
 def rectIntersect(rect1, rect2):
     left = max(rect1.left, rect2.left)
     right = min(rect1.right, rect2.right)
@@ -67,7 +73,6 @@ col2Switch=False
 saved=False
 colPick=False
 leftClick=False
-flagVar=False
 fullScreen=False
 music=True
 musicClick=False
@@ -85,10 +90,10 @@ textColRandom=False
 textColChange=False
 
 changeOpacity=False
+
 selected=False
 moveSelected=False
 placeSelected=False
-
 moveArea=True
 copyArea=False
 pasteArea=False
@@ -212,6 +217,8 @@ dropperIcon=image.load("images/dropperIcon.png")
 dropperIcon=transform.scale(dropperIcon,(15,15))
 diceIcon=image.load("images/diceIcon.png")
 diceIcon=transform.scale(diceIcon,(15,15))
+checkIcon=image.load("images/checkIcon.png")
+checkIcon=transform.scale(checkIcon,(15,15))
 
 #BACKGROUNDS IMAGES
 spaceImg1=image.load("images/spaceImg1.jpg")
@@ -542,7 +549,7 @@ PenTool = PenTool.PenTool(darkBlue,lightBlue,darkBlue,titleFont,darkBlue,ribbonF
 TextTool = TextTool.TextTool(white,darkBlue,darkBlue)
 ShapeTool = ShapeTool.ShapeTool(darkBlue,lightBlue,darkBlue,titleFont,darkBlue,ribbonFont2,RGBFont,"Line")
 CustomShape = CustomShape.CustomShape(screen)
-
+##################################################
 while running:
     for evnt in event.get():
         if evnt.type == QUIT:
@@ -564,6 +571,7 @@ while running:
 
     ##################################################
     #X AND Y
+    #co-ordinates in the bottom left corner of the canvas
     if subTool=="None" :
         screen.blit(xyBuff,(450,770))
         if canvasRect.collidepoint(mx,my):
@@ -577,12 +585,12 @@ while running:
     #UNDO/REDO SCREENSHOTS
     if subTool=="None" and tool!="Stamp" and not custom and tool!="Cursor" and tool!="Palette" and not selected:
         if (mb[0]==1 and canvasRect.collidepoint(mx,my)):
-            screenShot=False
-        if mb[0]==0 and screenShot==False:
+            screenShot=False    #if click on canvas screenshot becomes False
+        if mb[0]==0 and screenShot==False:   #when release mouse and screenshot false, program takes screenshot
             undoList.append(screen.subsurface(canvasRect).copy())
             screenShot=True
             if undid==True:
-                del redoList[0:]
+                del redoList[0:]    #deletes redoList if user uses undo
                 undid=False
 
     ##################################################
@@ -1810,7 +1818,8 @@ while running:
                 showDropDown=False
         else:
             TextTool.hideDropDown(screen)
-        if (Rect(295,265,20,31).collidepoint(mx,my) and mb[0]==1 and not textClick) or (showDropDown and mb[0]==1 and not Rect(295,265,20,31).collidepoint(mx,my)):
+            
+        if Rect(295,265,20,31).collidepoint(mx,my) and mb[0]==1 and (not textClick or showDropDown):
             showDropDown=not showDropDown
 
         if mb[0]==1 and not textClick:
