@@ -714,13 +714,20 @@ while running:
 
     if brushOpacity==220:
         surf1.set_alpha(255)
+    if 10>brushOpacity>0:
+        surf1.set_alpha(int(brushOpacity/220*255))
 
     if eraserOpacity==220:
         surf2.set_alpha(255)
+    if 10>eraserOpacity>0:
+        surf2.set_alpha(int(eraserOpacity/220*255))
 
     if penOpacity==220:
         surf3.set_alpha(255)
         surf4.set_alpha(255)
+    if 10>penOpacity>0:
+        surf3.set_alpha(int(penOpacity/220*255))
+        surf4.set_alpha(int(penOpacity/220*255))
 
     ##################################################
     #mixer.music.set_volume(0.0)
@@ -2482,11 +2489,9 @@ while running:
                 for i in range(0,dist):
                     dotx=int(i*(mx-pmx)/dist+pmx)
                     doty=int(i*(my-pmy)/dist+pmy)
-                    #draw.circle(screen,white,(dotx,doty),eraserThick)
                     screen.blit(surf2, (dotx-surf2.get_width()//2,doty-surf2.get_height()//2))
 
             else:
-                #draw.circle(screen,white,(mx,my),eraserThick)
                 surf2.set_alpha(int(eraserOpacity/220*255))
                 screen.blit(surf2, (mx-surf2.get_width()//2,my-surf2.get_height()//2))
 
@@ -2541,7 +2546,7 @@ while running:
         pmx = mx
         pmy = my
 
-        if tool=="Fill":
+        if tool=="Fill" and canvasRect.collidepoint(mx,my):
             spots=[]
             spots.append((sx,sy))
             fillCol = screen.get_at((sx,sy))
@@ -2553,7 +2558,7 @@ while running:
                         spots+=[(fx,fy-1),(fx,fy+1),(fx-1,fy),(fx+1,fy)]
 
 
-        if tool=="Text" and subTool=="None" and ribbon=="None":
+        if tool=="Text" and subTool=="None" and ribbon=="None" and canvasRect.collidepoint(mx,my):
             txt=TextInput.TextInput(screen,mx,my,canvasRect)
             txt.drawText(textCol,TextTool.getFont().getFontName(),TextTool.getTextSize().getSize(),TextTool.getBold().getSelected(),
                          TextTool.getItalics().getSelected(),TextTool.getUnderline().getSelected(),TextTool.getStrike().getSelected())
