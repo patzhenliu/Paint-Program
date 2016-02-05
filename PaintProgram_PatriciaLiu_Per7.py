@@ -23,19 +23,6 @@ import ShapeTool
 import CustomShape
 import ShortcutMenu
 
-##################################################
-
-#FUNCTION
-#gets for rect only inside the canvas if user goes out of the canvas.
-def rectIntersect(rect1, rect2):
-    left = max(rect1.left, rect2.left)
-    right = min(rect1.right, rect2.right)
-    top = max(rect1.top, rect2.top)
-    bottom = min(rect1.bottom, rect2.bottom)
-
-    rect=Rect(left, top, right-left, bottom-top)
-    return rect
-
 ################SCREEN SETUP######################
 
 #INITIATE/SCREEN SIZE SETUP
@@ -117,6 +104,7 @@ shape="Line"
 currentStamp="None"
 stampPage=1
 backgroundPage=1
+fName=""
 
 #PREVIOUS TOOL
 #Used when tool becomes palette. If the user clicks "OK"
@@ -135,7 +123,7 @@ penType="Right Pen"
 #FILLS BRUSH/ERASER SPACES
 #Fills in the spaces between the circles when using
 #eraser and paint brush for a smooth consistent line.
-pBrushVar=0
+pRandNum=0
 pmx = 0
 pmy = 0
 
@@ -218,8 +206,6 @@ dropperIcon=image.load("images/dropperIcon.png")
 dropperIcon=transform.scale(dropperIcon,(15,15))
 diceIcon=image.load("images/diceIcon.png")
 diceIcon=transform.scale(diceIcon,(15,15))
-checkIcon=image.load("images/checkIcon.png")
-checkIcon=transform.scale(checkIcon,(15,15))
 
 #BACKGROUNDS IMAGES
 spaceImg1=image.load("images/spaceImg1.jpg")
@@ -538,6 +524,19 @@ draw.rect(screen,darkBlue,volControl,2)
 
 ##################################################
 
+#FUNCTIONS
+#gets for rect only inside the canvas if user goes out of the canvas.
+def rectIntersect(rect1, rect2):
+    left = max(rect1.left, rect2.left)
+    right = min(rect1.right, rect2.right)
+    top = max(rect1.top, rect2.top)
+    bottom = min(rect1.bottom, rect2.bottom)
+
+    rect=Rect(left, top, right-left, bottom-top)
+    return rect
+
+##################################################
+
 #__init__ FOR OBJECTS
 ToolSelection = ToolSelection.ToolBox(darkBlue,lightBlue)
 PencilTool = PencilTool.PencilTool(darkBlue,lightBlue,darkBlue,titleFont,darkBlue,ribbonFont2,RGBFont)
@@ -618,26 +617,17 @@ while running:
                 if mb[0]==1:
                     backgroundPage=1
         
-
         if backgroundPage==1:
-            screen.blit(spaceIcon1,(170,812))
-            screen.blit(spaceIcon2,(370,812))
-            screen.blit(spaceIcon3,(570,812))
-            screen.blit(spaceIcon4,(770,812))
-            screen.blit(spaceIcon5,(970,812))
+            backgroundList=[spaceIcon1,spaceIcon2,spaceIcon3,spaceIcon4,spaceIcon5]
+            for i in range(5):
+                screen.blit(backgroundList[i],(170+200*i,812))
         elif backgroundPage==2:
-            screen.blit(spaceIcon6,(170,812))
-            screen.blit(spaceIcon7,(370,812))
-            screen.blit(spaceIcon8,(570,812))
-            screen.blit(spaceIcon9,(770,812))
-            screen.blit(spaceIcon10,(970,812))
+            backgroundList=[spaceIcon6,spaceIcon7,spaceIcon8,spaceIcon9,spaceIcon10]
+            for i in range(5):
+                screen.blit(backgroundList[i],(170+200*i,812))
 
-        draw.rect(screen,darkBlue,[170,812,155,135],3)
-        draw.rect(screen,darkBlue,[370,812,155,135],3)
-        draw.rect(screen,darkBlue,[570,812,155,135],3)
-        draw.rect(screen,darkBlue,[770,812,155,135],3)
-        draw.rect(screen,darkBlue,[970,812,155,135],3)
-
+        for i in range(5):
+            draw.rect(screen,darkBlue,[170+200*i,812,155,135],3)
 
         if subTool=="None":
             if Rect(170,812,155,135).collidepoint(mx,my):
@@ -693,25 +683,29 @@ while running:
     ##################################################
     #OPACITY
     TRANSPARENT = (255,0,255)
-    
+
+    #brush
     surf1 = Surface((200,200))
     surf1.fill(TRANSPARENT)
     surf1.set_colorkey(TRANSPARENT)
     draw.circle(surf1,col,(100,100),brushThick)
     surf1.set_alpha(int(brushOpacity/220*255/5))
 
+    #eraser
     surf2 = Surface((200,200))
     surf2.fill(TRANSPARENT)
     surf2.set_colorkey(TRANSPARENT)
     draw.circle(surf2,white,(100,100),eraserThick)
     surf2.set_alpha(int(eraserOpacity/220*255/5))
-    
+
+    #right pen
     surf3 = Surface((200,200))
     surf3.fill(TRANSPARENT)
     surf3.set_colorkey(TRANSPARENT)
     draw.line(surf3,col,(100-penThick,100-penThick),(100+penThick,100+penThick),penThick)
     surf3.set_alpha(int(penOpacity/220*255/2))
 
+    #left pen
     surf4 = Surface((200,200))
     surf4.fill(TRANSPARENT)
     surf4.set_colorkey(TRANSPARENT)
@@ -1022,12 +1016,9 @@ while running:
             
 
         #COLOUR HISTORY BOXES
-        draw.rect(screen,colHisCol1,colHisRect1)
-        draw.rect(screen,colHisCol2,colHisRect2)
-        draw.rect(screen,colHisCol3,colHisRect3)
-        draw.rect(screen,colHisCol4,colHisRect4)
-        draw.rect(screen,colHisCol5,colHisRect5)
-        draw.rect(screen,colHisCol6,colHisRect6)
+        colourList=[colHisCol1,colHisCol2,colHisCol3,colHisCol4,colHisCol5,colHisCol6]
+        for i in range(6):
+            draw.rect(screen,colourList[i],(155+40*i,545,20,20))
 
         #HOVERING OVER COLOUR HISTORY BOXES AND CLICKING
         if subTool=="None":
@@ -1099,7 +1090,7 @@ while running:
                     leftClick=True
 
         #TINY BOX IN THE COLOUR SPECTRUM
-        if col2Switch==False:
+        if col2Switch==False:   #COLOUR 1 (DEFAULT BLACK)
             screen.set_clip(pickColourRect2)#tiny box
             draw.rect(screen,black,[cmx1,cmy1,10,10],2)
             draw.rect(screen,white,[cmx1+1,cmy1+1,9,9],1)
@@ -1121,7 +1112,7 @@ while running:
                     colHisCol1=col
                     colPick=False
 
-        if col2Switch==True:
+        if col2Switch==True:  #COLOUR 2 (DEFAULT WHITE)
             screen.set_clip(pickColourRect2)#tiny box
             draw.rect(screen,black,[cmx2,cmy2,10,10],2)
             draw.rect(screen,white,[cmx2+1,cmy2+1,9,9],1)
@@ -1143,7 +1134,7 @@ while running:
                     colHisCol1=col
                     colPick=False
 
-        for i in range(153,354,40):
+        for i in range(153,354,40): #borders for colour history boxes
             draw.rect(screen,darkBlue,[i,543,24,24],3)
                 
         draw.rect(screen,darkBlue,pickColourRect2,3)
@@ -1539,6 +1530,8 @@ while running:
                 if mb[0]==1:
                     sprayThick = SprayTool.selectSpray(10)
 
+        #SPRAY PAINT OPACITY
+        #draw
         draw.rect(screen,darkBlue,[155,420,220,5])
         draw.rect(screen,white,[155,420,sprayOpacity,5])
         draw.polygon(screen,white,((155+sprayOpacity,415),(149+sprayOpacity,410),(149+sprayOpacity,400),
@@ -1552,6 +1545,7 @@ while running:
         display.text=ribbonFont2.render(str(int(sprayOpacity/220*100)),True,white)
         screen.blit(display.text,(325,435))
 
+        #changing opacity
         if Rect(145,400,240,25).collidepoint(mx,my) and mb[0]==1 and not changeOpacity:
             changeOpacity=True
 
@@ -1573,16 +1567,12 @@ while running:
         PenTool.draw(screen)
         
         #PEN ICONS
-        screen.blit(pen1,(166,260))
-        screen.blit(pen2,(210,259))
-        screen.blit(pen3,(254,258))
-        screen.blit(pen4,(298,256))
-        screen.blit(pen5,(342,255))
-        screen.blit(pen6,(165,310))
-        screen.blit(pen7,(209,309))
-        screen.blit(pen8,(253,308))
-        screen.blit(pen9,(296,306))
-        screen.blit(pen10,(340,305))
+        penIconList=[pen1,pen2,pen3,pen4,pen5,pen6,pen7,pen8,pen9,pen10]
+        for i in range(10):
+            if i<5:
+                screen.blit(penIconList[i],(166+44*i,260-i))
+            else:
+                screen.blit(penIconList[i],(164+44*(i-5),315-i))
 
         #SELECTING PEN
         if subTool=="None":
@@ -1636,6 +1626,8 @@ while running:
                     penThick = PenTool.selectPen(10)
                     penType = PenTool.getPenType(10)
 
+        #PEN OPACITY
+        #draw
         draw.rect(screen,darkBlue,[155,420,220,5])
         draw.rect(screen,white,[155,420,penOpacity,5])
         draw.polygon(screen,white,((155+penOpacity,415),(149+penOpacity,410),(149+penOpacity,400),
@@ -1649,6 +1641,7 @@ while running:
         display.text=ribbonFont2.render(str(int(penOpacity/220*100)),True,white)
         screen.blit(display.text,(325,435))
 
+        #changing opacity
         if Rect(145,400,240,25).collidepoint(mx,my) and mb[0]==1 and not changeOpacity:
             changeOpacity=True
 
@@ -1729,19 +1722,12 @@ while running:
         TextTool.draw(screen)
         
         ###SHOW RGB
-        display.text=ribbonFont2.render("R:",True,white)
-        screen.blit(display.text,(240,320))
-        display.text=ribbonFont2.render("G:",True,white)
-        screen.blit(display.text,(290,320))
-        display.text=ribbonFont2.render("B:",True,white)
-        screen.blit(display.text,(340,320))
-        
-        display.text=ribbonFont2.render(str(textCol[0]),True,white)
-        screen.blit(display.text,(255,320))
-        display.text=ribbonFont2.render(str(textCol[1]),True,white)
-        screen.blit(display.text,(305,320))
-        display.text=ribbonFont2.render(str(textCol[2]),True,white)
-        screen.blit(display.text,(355,320))
+        rgbList=["R:","G:","B:"]
+        for i in range(3):
+            display.text=ribbonFont2.render(rgbList[i],True,white)
+            screen.blit(display.text,(240+50*i,320))
+            display.text=ribbonFont2.render(str(textCol[i]),True,white)
+            screen.blit(display.text,(255+50*i,320))
 
         #COLOUR STUFF
         draw.rect(screen,textCol,(160,315,30,30))
@@ -1777,7 +1763,8 @@ while running:
             if mb[0]==0 and textColRandom:
                 textColRandom=False
                 textColChange=False
-                        
+
+            #CHECK IF BOLD/ITALICS/UNDERLINE/STIKE ARE IN USE
             if TextTool.getBold().mouseCollision(screen,mx,my) and not textClick:
                 if mb[0]==1:
                     TextTool.getBold().select()
@@ -1796,10 +1783,10 @@ while running:
                 if mb[0]==1:
                     TextTool.getStrike().select()
         
-        #draw.rect(screen,white,(155,265,160,30))
         draw.rect(screen,darkBlue,(295,265,20,31))
         draw.polygon(screen,white,((300,277),(310,277),(305,282)))
 
+        #draw dropdown
         if showDropDown and subTool=="None":
             draw.rect(screen,darkBlue,(155,265,160,31))
             TextTool.drawDropDown(screen)
@@ -1838,8 +1825,6 @@ while running:
         if TextTool.getTextSize().mouseCollision(mx,my) and mb[0]==1 and subTool=="None":
             TextTool.getTextSize().changeSize(screen)
         draw.rect(screen,darkBlue,(330,265,40,30),2)#size
-        
-        
 
     ##################################################
 
@@ -2474,11 +2459,11 @@ while running:
 
     #USING THE TOOLS ON THE CANVAS
     if mb[0]==0 or not canvasRect.collidepoint(mx,my):
-        brushVar=0 
+        randNum=0 
             
     if canvasRect.collidepoint(mx,my) and mb[0]==1  and subTool=="None":
-        if brushVar==0:
-            brushVar=randint(1,1000)
+        if randNum==0:
+            randNum=randint(1,1000)
             
         screen.set_clip(canvasRect)
         if tool=="Cursor" and not placeSelected and not pasteArea:
@@ -2492,7 +2477,7 @@ while running:
             draw.line(screen,col,(omx,omy),(mx,my),pencilLineThick)
             
         if tool=='Eraser':       
-            if pBrushVar==brushVar:
+            if pRandNum==randNum: 
                 dist=int(sqrt((mx-pmx)**2+(my-pmy)**2))
                 for i in range(0,dist):
                     dotx=int(i*(mx-pmx)/dist+pmx)
@@ -2507,18 +2492,14 @@ while running:
 
         
         if tool=='Brush':    
-            if pBrushVar==brushVar:
+            if pRandNum==randNum:
                 dist=int(sqrt((mx-pmx)**2+(my-pmy)**2))
                 for i in range(0,dist):
                     dotx=int(i*(mx-pmx)/dist+pmx)
                     doty=int(i*(my-pmy)/dist+pmy)
-                    #rect=Surface((brushThick*2,brushThick*2), SRCALPHA, 32)
-                    #rect.set_alpha(int(brushOpacity/220*255))
-                    #draw.circle(rect,col,(mx,my),brushThick)
                     screen.blit(surf1, (dotx-surf1.get_width()//2,doty-surf1.get_height()//2))
 
             else:
-                #draw.circle(surf1,col,(mx,my),brushThick)
                 surf1.set_alpha(int(brushOpacity/220*255))
                 screen.blit(surf1, (mx-surf1.get_width()//2,my-surf1.get_height()//2))
              
@@ -2530,24 +2511,21 @@ while running:
                     rect=Surface((2,2), SRCALPHA, 32)
                     rect.fill((col[0],col[1],col[2],int(sprayOpacity/220*255)))
                     screen.blit(rect,(mx+randx,my+randy))
-                    #draw.rect(screen,col,[mx+randx,my+randy,2,2])
 
         if tool=="Pen": 
             if penType=="Right Pen":
-                if pBrushVar==brushVar:
+                if pRandNum==randNum:
                     dist=int(sqrt((mx-pmx)**2+(my-pmy)**2))
                     for i in range(0,dist):
                         dotx=int(i*(mx-pmx)/dist+pmx)
                         doty=int(i*(my-pmy)/dist+pmy)
-                        #draw.line(screen,col,(dotx-penThick,doty-penThick),(dotx+penThick,doty+penThick),3)
                         screen.blit(surf3,(dotx-surf3.get_width()//2,doty-surf3.get_height()//2))
                 else:
-                    #draw.line(screen,col,(mx-penThick,my-penThick),(mx+penThick,my+penThick),3)
                     surf3.set_alpha(int(penOpacity/220*255))
                     screen.blit(surf3,(mx-surf3.get_width()//2,my-surf3.get_height()//2))
               
             if penType=="Left Pen":
-                if pBrushVar==brushVar:
+                if pRandNum==randNum:
                     dist=int(sqrt((mx-pmx)**2+(my-pmy)**2))
                     for i in range(0,dist):
                         dotx=int(i*(mx-pmx)/dist+pmx)
@@ -2559,7 +2537,7 @@ while running:
                     surf4.set_alpha(int(penrOpacity/220*255))
                     screen.blit(surf3,(mx-surf3.get_width()//2,my-surf3.get_height()//2))
 
-        pBrushVar=brushVar
+        pRandNum=randNum #pRandNum and randNum become equal if user holds the mouse down for a longer period of time
         pmx = mx
         pmy = my
 
@@ -2576,9 +2554,6 @@ while running:
 
 
         if tool=="Text" and subTool=="None" and ribbon=="None":
-            #txt = TextInput.getText(screen,mx,my,ribbonFont) 
-            #txtPic = ribbonFont.render(txt, True, col)
-            #screen.blit(txtPic,(mx,my))
             txt=TextInput.TextInput(screen,mx,my,canvasRect)
             txt.drawText(textCol,TextTool.getFont().getFontName(),TextTool.getTextSize().getSize(),TextTool.getBold().getSelected(),
                          TextTool.getItalics().getSelected(),TextTool.getUnderline().getSelected(),TextTool.getStrike().getSelected())
@@ -2586,6 +2561,9 @@ while running:
         screen.set_clip(None)
     omx=mx
     omy=my
+
+    ####################################################################
+    #SHAPES ON THE CANVAS
 
     if mb[0]==1 and subTool=="None":
         screen.set_clip(canvasRect)
@@ -2604,7 +2582,8 @@ while running:
                         draw.line(screen, col, (sx,sy),(sx,my),3)
                     elif yDiff<=xDiff:
                         draw.line(screen, col, (sx,sy),(mx,sy),3)
-                else:
+                        
+                else: #NORMAL LINE (ANY DIRECTION)
                     draw.line(screen, col, (sx,sy),(mx,my),3)
             
             if shape=="Rectangle":
@@ -2655,6 +2634,7 @@ while running:
                     if mb[0]==1 and ((sx-mx)>5 or (sx-mx)<-5) and ((sy-my)>5 or (sy-my)<-5):
                         ellRect.normalize()
                         draw.ellipse(screen, col, ellRect,radius) #draw a new line
+                        
                 else:#ELLIPSE
                     ellRect=Rect(sx,sy,mx-sx,my-sy)
                     ellRect.normalize()
@@ -2727,7 +2707,7 @@ while running:
                     if mb[0]==1:
                         draw.polygon(screen, col,((mx,sy+(my-sy)//2),(sx+(mx-sx)//2,my),(sx,sy+(my-sy)//2),(sx+(mx-sx)//2,sy)),radius)
 
-            if shape=="Right Triangle":
+            if shape=="Right Triangle": #right angle triangle
                     if evnt.type == MOUSEBUTTONUP:
                         screen.blit(canvasBuff, (447,92))
                         if my>sy:
@@ -2743,6 +2723,7 @@ while running:
                         else:
                             draw.polygon(screen, col,((sx,sy),(mx,sy),(mx,my)),radius)
 
+            #POLYGON TOOL
             if shape=="Custom" and canvasRect.collidepoint(mx,my):
                 if custom==False and subTool!="Edit Clear" and subTool!="File New":
                     CustomShape.getScreenShot(Rect(447,92,776,676))
@@ -2850,16 +2831,9 @@ while running:
             ribbon="None"
             screen.blit(screenBuff,(0,0))
 
-    #FILE KEY ALTERNATES
+    #FILE KEYBOARD ALTERNATIVES
     if subTool!="View Mode":
         if (keys[K_LCTRL] or keys[K_RCTRL]) and keys[K_n]:#NEW
-            '''
-            if not saved:
-                fName=filedialog.asksaveasfilename(defaultextension=".png")
-                saved=True
-            if saved:
-                image.save(screen.subsurface(canvasRect),fName)
-            '''
             subTool="File New"
             display.set_caption("Untitled")
             saved=False
@@ -2967,7 +2941,7 @@ while running:
             screen.blit(rect,(104,138))
             transformTab=True
 
-        if editTransformRect.collidepoint(mx,my) or transformRect.collidepoint(mx,my):
+        if editTransformRect.collidepoint(mx,my) or transformRect.collidepoint(mx,my): #TRANSFORM CANVAS
             if transformTab:
                 draw.rect(screen,medBlue,transformRect)
                 draw.rect(screen,white,lRotateRect)
@@ -3043,7 +3017,7 @@ while running:
     ######################################################
 
     #EDIT ALT KEYS
-    if subTool!="View Mode" and currentStamp=="None" and ribbon=="None" and not custom:
+    if subTool!="View Mode" and currentStamp=="None" and ribbon=="None" and not custom and not selected and not moveSelected and not placeSelected:
         if keys[K_LCTRL] and keys[K_z] and undo==False:
             if len(undoList)>2:
                 redoList.append(undoList[-1])
@@ -3140,7 +3114,7 @@ while running:
                 screen.blit(canvasBuff,(447,92))
                 if not saved:
                     fName=filedialog.asksaveasfilename(defaultextension=".png")
-                    saved=True
+                    saved=False
                 if saved:
                     image.save(screen.subsurface(canvasRect),fName)
 
@@ -3160,23 +3134,27 @@ while running:
                 subTool="None"
         
     if subTool=="File Open":
-        fNameImg=image.load(fName)
-        if fNameImg.get_width()>776 or fNameImg.get_height()>676:
-            maxSide=max(fNameImg.get_width(),fNameImg.get_height())
-            if maxSide==fNameImg.get_width():
-                openScale=776/fNameImg.get_width()
-                fNameImg=transform.scale(fNameImg,(776,int(fNameImg.get_height()*openScale)))
-            elif maxSide==fNameImg.get_height():
-                openScale=676/fNameImg.get_height()
-                fNameImg=transform.scale(int(fNameImg.get_width()*openScale,676))
+        if fName!="": #Opening a file
+            fNameImg=image.load(fName)
+            if fNameImg.get_width()>776 or fNameImg.get_height()>676:
+                maxSide=max(fNameImg.get_width(),fNameImg.get_height())
+                if maxSide==fNameImg.get_width():
+                    openScale=776/fNameImg.get_width()
+                    fNameImg=transform.scale(fNameImg,(776,int(fNameImg.get_height()*openScale)))
+                elif maxSide==fNameImg.get_height():
+                    openScale=676/fNameImg.get_height()
+                    fNameImg=transform.scale(int(fNameImg.get_width()*openScale,676))
 
-        undoList.append(screen.subsurface(canvasRect).copy())
-        screen.blit(fNameImg,(447,92))
-        undoList.append(screen.subsurface(canvasRect).copy())
-        canvasBuff=screen.subsurface(canvasRect).copy()
-        subTool="None"
+            undoList.append(screen.subsurface(canvasRect).copy())
+            screen.blit(fNameImg,(447,92))
+            undoList.append(screen.subsurface(canvasRect).copy())
+            canvasBuff=screen.subsurface(canvasRect).copy()
+            subTool="None"
+        else:
+            subTool="None"
+    
 
-    if subTool=="Edit Clear":
+    if subTool=="Edit Clear": #asks yes or no
         draw.rect(screen,darkBlue,[700,300,250,100])
         draw.rect(screen,lightBlue,[700,300,250,100],3)
         display.text=ribbonFont.render("Are you Sure?",True,white)
@@ -3208,7 +3186,7 @@ while running:
                 screen.blit(canvasBuff,(447,92))
                 subTool="None"
 
-    if subTool=="View Mode":
+    if subTool=="View Mode": #screen for full screen
         screen.fill((cyan))
         scale=height/676
         display.text=ribbonFont2.render("Press ESC to exit full screen",True,darkBlue)
@@ -3224,7 +3202,7 @@ while running:
             subTool="None"
             fullScreen=False
 
-    if subTool=="View Shortcut":
+    if subTool=="View Shortcut": #screen for all the shortcut keys
         ShortcutMenu.ShortcutMenu(titleFont,ribbonFont,ribbonFont2,darkBlue,screen)
         if keys[K_ESCAPE]:
             screen.blit(menuBuff,(447,92))
