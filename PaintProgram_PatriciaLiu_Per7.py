@@ -212,8 +212,6 @@ dropperIcon=image.load("images/dropperIcon.png")
 dropperIcon=transform.scale(dropperIcon,(15,15))
 diceIcon=image.load("images/diceIcon.png")
 diceIcon=transform.scale(diceIcon,(15,15))
-checkIcon=image.load("images/checkIcon.png")
-checkIcon=transform.scale(checkIcon,(15,15))
 
 #BACKGROUNDS IMAGES
 spaceImg1=image.load("images/spaceImg1.jpg")
